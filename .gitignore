@@ -6,5 +6,5 @@ __pycache__/
 
 # Ignore files in migration directory as they are just the history of the DB migrations
 # applied on machine in which we are running
-migrations/*
-!migrations/__init__.py
+**/migrations/*
+!**/migrations/__init__.py
