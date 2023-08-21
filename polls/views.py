@@ -6,6 +6,7 @@ from .models import Question,Choice
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 
 # def index(request):
@@ -31,6 +32,15 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         """Return the last five published questions."""
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
+    
+    def get(self,request):
+        queryset = self.get_queryset()
+        paginator = Paginator(queryset, 2)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        # return render(request,"polls/detail.html",{"question":question,"error_message":"You didn't select a choice."})
+        return render(request,"polls/index.html",{'latest_question_list':page_obj})
+        
 
 # def detail(request,question_id):
 #     question = get_object_or_404(Question,pk = question_id)
@@ -41,6 +51,8 @@ class DetailView(generic.DetailView):
 
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now())
+        #queryset = Question.objects.filter(pub_date__lte=timezone.now())
+    
 
 # def results(request,question_id):
 #     # response = "You are looking at the results of question %s."
